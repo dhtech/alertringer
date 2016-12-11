@@ -1,0 +1,14 @@
+[Unit]
+Description=Dreamhack alertringer service
+After=network.target redis-server.service
+Requires=redis-server.service
+ConditionPathExists=!/etc/dreamhack_maint
+
+[Service]
+Type=simple
+ExecStart=/opt/alertringer/alertringer.py 
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+Alias=alertringer.service

@@ -1,0 +1,15 @@
+[Unit]
+Description=Dreamhack alertbuzzer service
+After=network.target redis-server.service
+Requires=redis-server.service
+ConditionPathExists=!/etc/dreamhack_maint
+StandardOutput=Null
+
+[Service]
+Type=simple
+ExecStart=/opt/alertringer/alertbuzzer.py 
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+Alias=alertbuzzer.service
