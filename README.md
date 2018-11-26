@@ -12,14 +12,17 @@ a passive buzzer is connected to GPIOpin21 and ground
 the leds are linked in serial and the first one is directly connected to gpiopin 18 on the rpi3 
 https://www.adafruit.com/products/1586
 sound borrowed from https://github.com/gumslone/raspi_buzzer_player
+more info regarding lib https://github.com/jgarff/rpi_ws281x
+disable sound on the pi
+
 ```
 
 * install
 ```
-compile and install, dont forget to disable the builtin sound
-https://github.com/jgarff/rpi_ws281x
 
-apt-get install redis-server
+apt-get install redis-server python-pip3 python3-redis
+pip3 install rpi_ws281x
+
 cd /opt
 git clone https://github.com/dhtech/alertringer.git
 cd alertringer

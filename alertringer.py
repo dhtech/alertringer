@@ -1,8 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import time
-import neopixel
+import rpi_ws281x
 import redis
 import sys
 import signal
@@ -20,14 +20,14 @@ LED_INVERT     = False   # True to invert the signal (when using NPN transistor 
 
 
 leds = (LED_COUNT * LED_RINGS)
-red        = neopixel.Color(0,255,0)
-green      = neopixel.Color(255,0,0)
-blue       = neopixel.Color(0,0,255)
+red        = rpi_ws281x.Color(0,255,0)
+green      = rpi_ws281x.Color(255,0,0)
+blue       = rpi_ws281x.Color(0,0,255)
 
-yellow     = neopixel.Color(255,255,0)
-black      = neopixel.Color(0,0,0)
-halfgreen  = neopixel.Color(50,0,0)
-halfyellow = neopixel.Color(150,150,0)
+yellow     = rpi_ws281x.Color(255,255,0)
+black      = rpi_ws281x.Color(0,0,0)
+halfgreen  = rpi_ws281x.Color(50,0,0)
+halfyellow = rpi_ws281x.Color(150,150,0)
 
 
 logfile = '/var/log/alertringer.log'
@@ -79,7 +79,7 @@ if __name__ == '__main__':
   signal.signal(signal.SIGTERM, signal_handler)
   r = redis.StrictRedis(host='localhost', port=6379, db=0)  
   # Create NeoPixel object with appropriate configuration.
-  strip = neopixel.Adafruit_NeoPixel((LED_COUNT * LED_RINGS), LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS)
+  strip = rpi_ws281x.Adafruit_NeoPixel((LED_COUNT * LED_RINGS), LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS)
   # Intialize the library (must be called once before other functions)
   strip.begin()
   while True:
