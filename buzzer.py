@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #---------------------------------------------------
 # This is free and unencumbered software released into the public domain.
 #
@@ -607,37 +607,37 @@ def play(melody,tempo,pause,pace=0.800):
 if __name__ == '__main__':		# Program start from here
   try:
     setup()
-    print "The Final Countdown"
+    print("The Final Countdown")
     play(final_countdown_melody, final_countdown_tempo, 0.30, 1.2000)
     time.sleep(2)
-    print "Per Olssons Bonnagard (Old MacDonald Had A Farm) Melody"
+    print("Per Olssons Bonnagard (Old MacDonald Had A Farm) Melody")
     play(bonnagard_melody, bonnagard_tempo, 0.30, 0.800)
     time.sleep(2)
-    print "Manaderna (Symphony No. 9) Melody"
+    print("Manaderna (Symphony No. 9) Melody")
     play(manaderna_melody, manaderna_tempo, 0.30, 0.800)
     time.sleep(2)
-    print "Deck The Halls Melody"
+    print("Deck The Halls Melody")
     play(deck_the_halls_melody, deck_the_halls_tempo, 0.30, 0.800)
     time.sleep(2)
-    print "Crazy Frog (Axel F) Theme"
+    print("Crazy Frog (Axel F) Theme")
     play(crazy_frog_melody, crazy_frog_tempo, 0.30, 0.900)
     time.sleep(2)
-    print "Twinkle, Twinkle, Little Star Melody"
+    print("Twinkle, Twinkle, Little Star Melody")
     play(twinkle_twinkle_melody, twinkle_twinkle_tempo, 0.50, 1.000)
     time.sleep(2)
-    print "Popcorn Melody"
+    print("Popcorn Melody")
     play(popcorn_melody, popcorn_tempo, 0.50, 1.000)
     time.sleep(2)
-    print "Star Wars Theme"
+    print("Star Wars Theme")
     play(star_wars_melody, star_wars_tempo, 0.50, 1.000)
     time.sleep(2)
-    print "Super Mario Theme"
+    print("Super Mario Theme")
     play(super_mario_melody, super_mario_tempo, 1.3, 0.800)
     time.sleep(2)
-    print "Super Mario Underworld Theme"
+    print("Super Mario Underworld Theme")
     play(underworld_melody, underworld_tempo, 1.3, 0.800)
     time.sleep(2)
-    print "Adventure Time Theme"
+    print("Adventure Time Theme")
     play(adventure_time_melody, adventure_time_tempo, 1.3, 1.500)
 		
     destroy()

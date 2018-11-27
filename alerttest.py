@@ -1,12 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 """util script for testing send stuff 2 redis via alertreceiver"""
-
-# python2 suck at utf8
-import sys
-reload(sys)
-sys.setdefaultencoding("utf-8")
 
 import json
 import requests
@@ -26,7 +21,7 @@ headers = {"content-type": "application/json; charset=utf-8"}
 
 if args.keys:
   r = requests.get(url, headers=headers)
-  print r.json()
+  print(r.json())
   exit()
 
 data = {}
@@ -36,7 +31,7 @@ paramdata = {}
 paramdata['team'] = args.team
 
 r = requests.post(url, headers=headers, json=data, params=paramdata)
-print data, paramdata, r.text
-print r.status_code
+print(data, paramdata, r.text)
+print(r.status_code)
 
 
