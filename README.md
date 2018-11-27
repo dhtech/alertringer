@@ -20,7 +20,7 @@ disable sound on the pi
 * install
 ```
 
-apt-get install git redis-server python3-pip python3-redis python3-requests python3-bottle
+apt-get install git redis-server python3-pip python3-redis python3-requests python3-bottle python3-rpi.gpio
 pip3 install rpi_ws281x
 
 cd /opt

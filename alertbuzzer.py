@@ -37,8 +37,13 @@ if __name__ == '__main__':
     oldteams = teams.copy()
     teams = {'access': 0, 'core': 0, 'powerpatrol': 0, 'services': 0}
     for key in r.scan_iter():
-      team = key.split(':')[1] 
-      teams[team] = teams[team] +1
+      val = r.get(key)
+      if val is None:
+        if debug:
+          print(key)
+      else:
+        team = json.loads(val.decode('utf-8'))['team']
+        teams[team] = teams[team] +1
     if firstrun == True:
       firstrun = False
       continue
