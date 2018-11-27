@@ -50,7 +50,7 @@ def signal_handler(signal, frame):
   exit()
 
 
-def rolling(strip, chart, color, wait_ms):
+def rolling(strip, chart, wait_ms):
   """ attempt for rolling x number of stuff """
   global paint
   #reset the things b4 
@@ -86,7 +86,7 @@ if __name__ == '__main__':
   while True:
     teams = {'access': 0, 'core': 0, 'powerpatrol': 0, 'services': 0}
     for key in r.scan_iter():
-      val = r.get(gey)
+      val = r.get(key)
       if val is None:
         if debug:
           print(key)
