@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import json
 import time
 import rpi_ws281x
 import redis
@@ -14,19 +15,19 @@ LED_COUNT      = 24      # Number of LED pixels per ring.
 LED_RINGS      = 4       # Number of LED rings
 LED_PIN        = 18      # GPIO pin connected to the pixels (must support PWM!).
 LED_FREQ_HZ    = 800000  # LED signal frequency in hertz (usually 800khz)
-LED_DMA        = 5       # DMA channel to use for generating signal (try 5)
-LED_BRIGHTNESS = 150     # Set to 0 for darkest and 255 for brightest
+LED_DMA        = 10      # DMA channel to use for generating signal (try 5)
+LED_BRIGHTNESS = 30      # Set to 0 for darkest and 255 for brightest
 LED_INVERT     = False   # True to invert the signal (when using NPN transistor level shift)
-
+LED_WAIT_MS    = 0
 
 leds = (LED_COUNT * LED_RINGS)
-red        = rpi_ws281x.Color(0,255,0)
-green      = rpi_ws281x.Color(255,0,0)
+red        = rpi_ws281x.Color(255,0,0)
+green      = rpi_ws281x.Color(0,255,0)
 blue       = rpi_ws281x.Color(0,0,255)
 
 yellow     = rpi_ws281x.Color(255,255,0)
 black      = rpi_ws281x.Color(0,0,0)
-halfgreen  = rpi_ws281x.Color(50,0,0)
+halfgreen  = rpi_ws281x.Color(0,150,0)
 halfyellow = rpi_ws281x.Color(150,150,0)
 
 
@@ -49,7 +50,7 @@ def signal_handler(signal, frame):
   exit()
 
 
-def rolling(strip, chart, color, wait_ms=(100/1000.0/2)):
+def rolling(strip, chart, color, wait_ms):
   """ attempt for rolling x number of stuff """
   global paint
   #reset the things b4 
@@ -85,11 +86,16 @@ if __name__ == '__main__':
   while True:
     teams = {'access': 0, 'core': 0, 'powerpatrol': 0, 'services': 0}
     for key in r.scan_iter():
-      team = key.split(':')[1] 
-      teams[team] = teams[team] +1
+      val = r.get(gey)
+      if val is None:
+        if debug:
+          print(key)
+      else:
+        team = json.loads(val.decode('utf-8'))['team'] 
+        teams[team] = teams[team] +1
 
     chart = {0: {'yellow': 0, 'red': teams['services']},
              1: {'yellow': 0, 'red': teams['core']},
              2: {'yellow': 0, 'red': teams['access']},
              3: {'yellow': 0, 'red': teams['powerpatrol']}}
-    rolling(strip, chart, yellow) # Paint all the stuff
+    rolling(strip, chart, LED_WAIT_MS) # Paint all the stuff
