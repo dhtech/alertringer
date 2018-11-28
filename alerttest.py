@@ -10,7 +10,7 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('--key', type=int, default=123, help='groupkey for faking alarms')
 parser.add_argument('--status', type=str, default='firing', choices=['firing','resolved'], help='alert or unalert')
-parser.add_argument('--team', type=str, default='core', choices=['services','core','access','powerpatrol'], help='team for blaming')
+parser.add_argument('--team', type=str, default='core', choices=['services','core','access','wifi','powerpatrol'], help='team for blaming')
 parser.add_argument('--keys', action='store_true', help='get all keys from redis')
 
 args = parser.parse_args()

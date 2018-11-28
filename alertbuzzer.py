@@ -32,11 +32,11 @@ if __name__ == '__main__':
   logger.info('starting up')
   signal.signal(signal.SIGTERM, signal_handler)
   r = redis.StrictRedis(host='localhost', port=6379, db=0)
-  teams = {'access': 0, 'core': 0, 'powerpatrol': 0, 'services': 0} 
+  teams = {'access': 0, 'wifi': 0, 'core': 0, 'powerpatrol': 0, 'services': 0} 
   while True:
     time.sleep(1)
     oldteams = teams.copy()
-    teams = {'access': 0, 'core': 0, 'powerpatrol': 0, 'services': 0}
+    teams = {'access': 0, 'wifi': 0, 'core': 0, 'powerpatrol': 0, 'services': 0}
     for key in r.scan_iter():
       val = r.get(key)
       if val is None:
@@ -64,9 +64,14 @@ if __name__ == '__main__':
         firstrun = True
         buzzer.play(buzzer.crazy_frog_melody, buzzer.crazy_frog_tempo, 0.30, 0.900)
         continue
+      if teams['wifi'] > oldteams['wifi']:
+        logger.info('playing wifi')
+        firstrun = True
+        buzzer.play(super_mario_melody, super_mario_tempo, 1.3, 0.800)
+        continue
       if teams['powerpatrol'] > oldteams['powerpatrol']:
         logger.info('playing powerpatrol')
         firstrun = True
-        buzzer.play(buzzer.final_countdown_melody, buzzer.final_countdown_tempo, 0.30, 1.2000)
+        buzzer.play(buzzer.final_countdown_melody, buzzer.final_countdown_tempo, 0.30, 1.1000)
         continue
 

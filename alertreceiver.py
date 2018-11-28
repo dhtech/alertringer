@@ -11,6 +11,8 @@ import redis
 import time
 
 debug = True
+defaultTTL = 600
+heartbeatTTL = 11
 
 @get('/api/v1/alerts')
 def get_alerts():
@@ -46,6 +48,10 @@ def post_alerts():
     logger.info('failed post alert resv %s' % (remote_ip))
     return {'result': 'failed', 'message': 'json blob was not readable'}
 
+  if debug:
+    print('team is {}'.format(redis_data['team']))
+    print(str(redis_id)+':'+redis_data['team'])
+
   if redis_data['team'] not in teams:
     logger.info('team: %s not in teams: %s' % (redis_data['team'], str(teams)))
     response.status = 400
@@ -53,8 +59,13 @@ def post_alerts():
     return {'result': 'failed', 'message': 'team not valid'}
 
   if redis_data['status'] == "firing":
-    logger.info('firing: key %s, team: %s from %s' % (redis_id, redis_data['team'], remote_ip)) 
-    r.setex(str(redis_id)+':'+redis_data['team'], 600, json.dumps(redis_data))
+    logger.info('firing: key %s, team: %s from %s' % (redis_id, redis_data['team'], remote_ip))
+    if redis_data['team'] == 'heartbeat':
+      TTL = heartbeatTTL
+    else:
+      TTL = defaultTTL
+      
+    r.setex(str(redis_id)+':'+redis_data['team'], TTL, json.dumps(redis_data))
   else:
     logger.info('resolved: key %s, team: %s from %s' % (redis_id, redis_data['team'], remote_ip))
     try:
@@ -67,7 +78,7 @@ def post_alerts():
 
 
 if __name__ == '__main__':
-  logger = logging.getLogger("reciver")
+  logger = logging.getLogger("receiver")
   logfile = '/var/log/alertringer.log'
   logger.setLevel(logging.INFO)
   formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
@@ -76,6 +87,6 @@ if __name__ == '__main__':
   logger.addHandler(handler)
 
   logger.info('starting up')
-  teams = ['services','core','access','powerpatrol']
+  teams = ['services','core','access','powerpatrol','wifi','heartbeat']
   r = redis.StrictRedis(host='localhost', port=6379, db=0)
   run(host='0.0.0.0', port=80, debug=False, reloader=False)

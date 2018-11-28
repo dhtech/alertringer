@@ -12,13 +12,14 @@ import logging
 
 # LED strip configuration:
 LED_COUNT      = 24      # Number of LED pixels per ring.
-LED_RINGS      = 4       # Number of LED rings
+LED_RINGS      = 5       # Number of LED rings
 LED_PIN        = 18      # GPIO pin connected to the pixels (must support PWM!).
 LED_FREQ_HZ    = 800000  # LED signal frequency in hertz (usually 800khz)
 LED_DMA        = 10      # DMA channel to use for generating signal (try 5)
 LED_BRIGHTNESS = 30      # Set to 0 for darkest and 255 for brightest
 LED_INVERT     = False   # True to invert the signal (when using NPN transistor level shift)
-LED_WAIT_MS    = 0
+LED_WAIT       = 0.01    # wait for rolling in SEC
+LED_FLASH      = 1       # wait for flasing in SEC
 
 leds = (LED_COUNT * LED_RINGS)
 red        = rpi_ws281x.Color(255,0,0)
@@ -32,7 +33,7 @@ halfyellow = rpi_ws281x.Color(150,150,0)
 
 
 logfile = '/var/log/alertringer.log'
-debug = True
+debug = False
 
 logger = logging.getLogger("ringer")
 logger.setLevel(logging.INFO)
@@ -50,7 +51,20 @@ def signal_handler(signal, frame):
   exit()
 
 
-def rolling(strip, chart, wait_ms):
+def flashing(strip, chart, wait):
+  """ flashing, heartbeat has stopped """
+  #reset the things b4 
+  for led in range(leds):
+    strip.setPixelColor(led, black)
+  strip.show()
+  time.sleep(wait)
+  for led in range(leds):
+    strip.setPixelColor(led, yellow)
+  strip.show()
+  time.sleep(wait)
+
+
+def rolling(strip, chart, wait):
   """ attempt for rolling x number of stuff """
   global paint
   #reset the things b4 
@@ -69,7 +83,7 @@ def rolling(strip, chart, wait_ms):
       for yellowled in range(chart[ring]['yellow']):
         strip.setPixelColor((ring * LED_COUNT + (int(paint) - (yellowled + 1) - (redled + 1)) % LED_COUNT), yellow)
   strip.show()
-  time.sleep(wait_ms)
+  time.sleep(wait)
   paint = (paint + 1) % LED_COUNT
 
 
@@ -84,7 +98,7 @@ if __name__ == '__main__':
   # Intialize the library (must be called once before other functions)
   strip.begin()
   while True:
-    teams = {'access': 0, 'core': 0, 'powerpatrol': 0, 'services': 0}
+    teams = {'access': 0, 'core': 0, 'powerpatrol': 0, 'services': 0, 'wifi': 0, 'heartbeat': 0}
     for key in r.scan_iter():
       val = r.get(key)
       if val is None:
@@ -97,5 +111,17 @@ if __name__ == '__main__':
     chart = {0: {'yellow': 0, 'red': teams['services']},
              1: {'yellow': 0, 'red': teams['core']},
              2: {'yellow': 0, 'red': teams['access']},
-             3: {'yellow': 0, 'red': teams['powerpatrol']}}
-    rolling(strip, chart, LED_WAIT_MS) # Paint all the stuff
+             3: {'yellow': 0, 'red': teams['wifi']},
+             4: {'yellow': 0, 'red': teams['powerpatrol']}}
+
+    if debug:
+      print('heartbeat {}'.format(teams['heartbeat']))
+      print('services {}'.format(teams['services']))
+      print('core {}'.format(teams['core']))
+      print('access {}'.format(teams['access']))
+      print('wifi {}'.format(teams['wifi']))
+      print('powerpatrol {}'.format(teams['powerpatrol']))
+    if teams['heartbeat'] == 0:
+      flashing(strip, chart, LED_FLASH) # Paint all the stuff
+    else:
+      rolling(strip, chart, LED_WAIT) # Paint all the stuff
